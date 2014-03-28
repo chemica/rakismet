@@ -78,11 +78,11 @@ module Rakismet
     protected
 
     def verify_url
-      "http://#{Rakismet.host}/1.1/verify-key"
+      "https://#{Rakismet.host}/1.1/verify-key"
     end
 
     def call_url(function)
-      "http://#{Rakismet.key}.#{Rakismet.host}/1.1/#{function}"
+      "https://#{Rakismet.key}.#{Rakismet.host}/1.1/#{function}"
     end
 
     def validate_config
