@@ -60,12 +60,13 @@ module Rakismet
     def valid_key?
       @valid_key == true
     end
-
+    
     def akismet_call(function, args={})
       validate_config
       args.merge!(:blog => Rakismet.url, :is_test => Rakismet.test_mode)
       akismet = URI.parse(call_url(function))
-      response = Net::HTTP::Proxy(proxy_host, proxy_port).start(akismet.host) do |http|
+      proxy = Net::HTTP::Proxy(proxy_host, proxy_port)
+      response = proxy.start(akismet.host, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) do |http|
         params = args.map do |k,v|
           param = v.class < String ? v.to_str : v.to_s # for ActiveSupport::SafeBuffer and Nil, respectively
           "#{k}=#{CGI.escape(param)}"
@@ -74,6 +75,7 @@ module Rakismet
       end
       response.body
     end
+
 
     protected
 
